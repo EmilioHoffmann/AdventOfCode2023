@@ -2,7 +2,6 @@ package com.hoffmann.emilio.adventofcode2023.four
 
 import android.content.Context
 import com.hoffmann.emilio.adventofcode2023.R
-import kotlin.math.pow
 
 class Four {
 
@@ -12,11 +11,13 @@ class Four {
                 context.resources.openRawResource(R.raw.input_four).bufferedReader()
                     .readLines()
             val map = input.map { calculateMatchingNumbers(it) }
-            val sum = map.sum()
-            println(sum)
+
+            val sum = map.sumOf { it.powerWinnings }
+            val part2 = secondPart(map)
+            println(part2)
         }
 
-        fun calculateMatchingNumbers(string: String): Int {
+        fun calculateMatchingNumbers(string: String): Game {
 
             val dividerIndex = string.indexOf("|")
 
@@ -34,7 +35,7 @@ class Four {
 
             // Count the number of matching numbers
 
-            var count = if (matchingNumbers.size > 0) 1 else 0
+            var count = if (matchingNumbers.isNotEmpty()) 1 else 0
             if (matchingNumbers.size > 1)
                 for (i in matchingNumbers.indices - 1) {
                     count *= 2
@@ -42,7 +43,32 @@ class Four {
 
             println("Matching numbers: $matchingNumbers")
 
-            return count
+            val game = Game(
+                winingNumbers = set1,
+                gameNumbers = set2,
+                winnings = matchingNumbers.size,
+                powerWinnings = count
+            )
+
+            return game
         }
+
+        fun secondPart(games: List<Game>): Int {
+            val count = (0..games.size).associateWith { 1 }.toMutableMap()
+            games.forEachIndexed { i, game ->
+                (i + 1..i + game.winingNumbers.intersect(game.gameNumbers).count()).forEach {
+                    count[it] = count[it]!! + count[i]!!
+                }
+            }
+
+            return count.filter { e -> e.key < games.size }.values.sum()
+        }
+
+        data class Game(
+            val winingNumbers: Set<Int>,
+            val gameNumbers: Set<Int>,
+            val winnings: Int,
+            val powerWinnings: Int
+        )
     }
 }
