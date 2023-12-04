@@ -9,14 +9,18 @@ class Two {
         fun main(context: Context) {
             val input = getStringListFromFile(R.raw.input_two, resources = context.resources)
             val games = input.map { parseGame(it) }
-            val valid = games.filterNot { game ->
-                game.sets.any { set -> !set.isValidGame }
-            }
-            val sum = valid.sumOf { it.id }
+//            val valid = games.filterNot { game ->
+//                game.sets.any { set -> !set.isValidGame }
+//            }
+            val sum = games.sumOf { it.powerOfGame }
             println(sum)
         }
 
-        data class Game(val id: Int, val sets: List<Set>)
+        data class Game(
+            val id: Int,
+            val sets: List<Set>,
+            val powerOfGame: Int
+        )
 
         data class Set(
             val red: Int = 0,
@@ -29,7 +33,16 @@ class Two {
             val (idString, setsString) = string.split(": ")
             val id = idString.trim().removePrefix("Game ").toInt()
             val sets = setsString.split("; ").map { parseSet(it) }
-            return Game(id, sets)
+            val highestBlue = sets.maxOf { it.blue }
+            val highestGreen = sets.maxOf { it.green }
+            val highestRed = sets.maxOf { it.red }
+
+            val powerOfGame = highestBlue * highestGreen * highestRed
+            return Game(
+                id,
+                sets,
+                powerOfGame
+            )
         }
 
         fun parseSet(string: String): Set {
