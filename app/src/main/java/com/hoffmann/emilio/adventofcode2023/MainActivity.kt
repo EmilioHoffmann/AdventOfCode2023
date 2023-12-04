@@ -2,6 +2,7 @@ package com.hoffmann.emilio.adventofcode2023
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.hoffmann.emilio.adventofcode2023.four.Four
 import com.hoffmann.emilio.adventofcode2023.one.One
 import com.hoffmann.emilio.adventofcode2023.two.Two
 
@@ -11,6 +12,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 //        One.main(this)
-        Two.main(this)
+        Four.main(this)
     }
 }
